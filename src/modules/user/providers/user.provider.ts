@@ -1,9 +1,7 @@
-import {
-  USER_REPOSITORY_INJECTION_TOKEN
-} from "../../../config/injection-tokens/config";
+import { USER_REPOSITORY_INJECTION_TOKEN } from '../../../config/injection-tokens/config';
 import { DataSource } from 'typeorm';
 import { FactoryProvider } from '@nestjs/common';
-import { User } from "../entity/User";
+import { User } from '../entity/User';
 
 export const userProvider: FactoryProvider[] = [
   {

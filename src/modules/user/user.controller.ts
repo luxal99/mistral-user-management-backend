@@ -4,12 +4,13 @@ import {
   Delete,
   Get,
   Param,
-  Post, Put,
+  Post,
+  Put,
   Query,
   Req,
   Res,
-  UseFilters
-} from "@nestjs/common";
+  UseFilters,
+} from '@nestjs/common';
 import { UserService } from './providers/user.service';
 import { User } from './entity/User';
 import * as bcrypt from 'bcrypt';

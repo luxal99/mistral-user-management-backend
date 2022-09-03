@@ -1,6 +1,6 @@
-import { ArgumentsHost, Catch, ExceptionFilter } from "@nestjs/common";
-import { UserNotFoundException } from "../exceptions/UserNotFoundException";
-import { Response } from "express";
+import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
+import { UserNotFoundException } from '../exceptions/UserNotFoundException';
+import { Response } from 'express';
 
 @Catch(UserNotFoundException)
 export class UserNotFoundExceptionFilter implements ExceptionFilter {

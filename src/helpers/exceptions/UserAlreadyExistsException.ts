@@ -1,5 +1,5 @@
-import { Messages } from "../messages/Messages";
-import { HttpException, HttpStatus } from "@nestjs/common";
+import { Messages } from '../messages/Messages';
+import { HttpException, HttpStatus } from '@nestjs/common';
 
 export class UserAlreadyExistsException extends HttpException {
   constructor() {

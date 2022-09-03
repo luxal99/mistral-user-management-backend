@@ -1,6 +1,11 @@
-import { ArgumentsHost, Catch, ExceptionFilter, HttpStatus } from "@nestjs/common";
-import { Response } from "express";
-import { UserAlreadyExistsException } from "../exceptions/UserAlreadyExistsException";
+import {
+  ArgumentsHost,
+  Catch,
+  ExceptionFilter,
+  HttpStatus,
+} from '@nestjs/common';
+import { Response } from 'express';
+import { UserAlreadyExistsException } from '../exceptions/UserAlreadyExistsException';
 
 @Catch(UserAlreadyExistsException)
 export class UserAlreadyExistsExceptionFilter implements ExceptionFilter {

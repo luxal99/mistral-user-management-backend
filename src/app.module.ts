@@ -8,7 +8,7 @@ import { UserInfoModule } from './modules/user-info/user-info.module';
 import { CONFIG } from './config/environment/environment.config';
 
 @Module({
-  imports: [CONFIG, UserModule,PermissionModule, UserInfoModule],
+  imports: [CONFIG, UserModule, PermissionModule, UserInfoModule],
   controllers: [AppController],
   providers: [...databaseProviders, AppService],
 })

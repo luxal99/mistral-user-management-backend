@@ -1,5 +1,5 @@
-import { HttpException, HttpStatus } from "@nestjs/common";
-import { Messages } from "../messages/Messages";
+import { HttpException, HttpStatus } from '@nestjs/common';
+import { Messages } from '../messages/Messages';
 
 export class PasswordNotValidException extends HttpException {
   constructor() {

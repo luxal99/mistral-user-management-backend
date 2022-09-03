@@ -15,7 +15,7 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'varchar', name: 'username',unique:true })
+  @Column({ type: 'varchar', name: 'username', unique: true })
   username: string;
 
   @Column({ type: 'varchar', name: 'password' })
@@ -23,9 +23,9 @@ export class User {
 
   @OneToOne(() => UserInfo, (userInfo) => userInfo.idUser, {
     cascade: true,
-    onUpdate:'CASCADE',
+    onUpdate: 'CASCADE',
   })
-  @JoinColumn({name:'id_user_info'})
+  @JoinColumn({ name: 'id_user_info' })
   idUserInfo: UserInfo;
 
   @ManyToMany(() => Permission)

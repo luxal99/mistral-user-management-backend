@@ -1,6 +1,11 @@
-import { ArgumentsHost, Catch, ExceptionFilter, HttpStatus } from "@nestjs/common";
-import { PasswordNotValidException } from "../exceptions/PasswordNotValidException";
-import { Response } from "express";
+import {
+  ArgumentsHost,
+  Catch,
+  ExceptionFilter,
+  HttpStatus,
+} from '@nestjs/common';
+import { PasswordNotValidException } from '../exceptions/PasswordNotValidException';
+import { Response } from 'express';
 
 @Catch(PasswordNotValidException)
 export class PasswordNotValidExceptionFilter implements ExceptionFilter {
