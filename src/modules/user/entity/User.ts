@@ -23,9 +23,9 @@ export class User {
 
   @OneToOne(() => UserInfo, (userInfo) => userInfo.idUser, {
     cascade: true,
-    eager: true,
+    onUpdate:'CASCADE',
   })
-  @JoinColumn()
+  @JoinColumn({name:'id_user_info'})
   idUserInfo: UserInfo;
 
   @ManyToMany(() => Permission)

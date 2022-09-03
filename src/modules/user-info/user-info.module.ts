@@ -4,6 +4,6 @@ import { UserInfoService } from './providers/user-info.service';
 
 @Module({
   controllers: [UserInfoController],
-  providers: [UserInfoService]
+  providers: [UserInfoService],
 })
 export class UserInfoModule {}

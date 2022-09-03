@@ -1,4 +1,4 @@
-import { ArgumentsHost, Catch, ExceptionFilter } from "@nestjs/common";
+import { ArgumentsHost, Catch, ExceptionFilter, HttpStatus } from "@nestjs/common";
 import { Response } from "express";
 import { UserAlreadyExistsException } from "../exceptions/UserAlreadyExistsException";
 
@@ -8,7 +8,7 @@ export class UserAlreadyExistsExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 
-    response.send({
+    response.status(HttpStatus.BAD_REQUEST).send({
       statusCode: exception.getStatus(),
       message: exception.message,
     });
