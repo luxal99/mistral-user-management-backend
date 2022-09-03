@@ -32,7 +32,10 @@ export class UserService {
 
     if (query.search) {
       queryBuilder.where(
-        "user.username like :search or idUserInfo.firstName like :search  or idUserInfo.lastName like :search or idUserInfo.email like :search",
+        "user.username like :search or" +
+        "idUserInfo.firstName like :search " +
+        "or idUserInfo.lastName like :search" +
+        "or idUserInfo.email like :search",
         { search: `%${query.search}%` }
       );
     }
@@ -42,5 +45,9 @@ export class UserService {
     }
 
     return await queryBuilder.getManyAndCount();
+  }
+
+  async deleteUser(id:number){
+    return await this.userRepository.delete({id})
   }
 }

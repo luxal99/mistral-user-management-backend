@@ -1,36 +1,40 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  Param,
   Post,
   Query,
   Req,
   Res,
-  UseFilters
-} from "@nestjs/common";
-import { UserService } from "./providers/user.service";
-import { User } from "./entity/User";
-import * as bcrypt from "bcrypt";
-import { Request, Response } from "express";
-import { UserAlreadyExistsExceptionFilter } from "../../helpers/http-filters/UserAlreadyExistsExceptionFIlter";
-import { UserAlreadyExistsException } from "../../helpers/exceptions/UserAlreadyExistsException";
-import { JwtService } from "@nestjs/jwt";
-import { AUTHORIZATION_HEADER, TOTAL_RESULTS } from "../../config/constants/constants";
-import { UserNotFoundException } from "../../helpers/exceptions/UserNotFoundException";
-import { UserNotFoundExceptionFilter } from "../../helpers/http-filters/UserNotFoundExceptionFilter";
-import { PasswordNotValidExceptionFilter } from "../../helpers/http-filters/PasswordNotValidExceptionFilter";
-import { PasswordNotValidException } from "../../helpers/exceptions/PasswordNotValidException";
-import { UserQuery } from "../../helpers/models/query/UserQuery";
+  UseFilters,
+} from '@nestjs/common';
+import { UserService } from './providers/user.service';
+import { User } from './entity/User';
+import * as bcrypt from 'bcrypt';
+import { Request, Response } from 'express';
+import { UserAlreadyExistsExceptionFilter } from '../../helpers/http-filters/UserAlreadyExistsExceptionFIlter';
+import { UserAlreadyExistsException } from '../../helpers/exceptions/UserAlreadyExistsException';
+import { JwtService } from '@nestjs/jwt';
+import {
+  AUTHORIZATION_HEADER,
+  TOTAL_RESULTS,
+} from '../../config/constants/constants';
+import { UserNotFoundException } from '../../helpers/exceptions/UserNotFoundException';
+import { UserNotFoundExceptionFilter } from '../../helpers/http-filters/UserNotFoundExceptionFilter';
+import { PasswordNotValidExceptionFilter } from '../../helpers/http-filters/PasswordNotValidExceptionFilter';
+import { PasswordNotValidException } from '../../helpers/exceptions/PasswordNotValidException';
+import { UserQuery } from '../../helpers/models/query/UserQuery';
 
-@Controller("user")
+@Controller('user')
 export class UserController {
   constructor(
     private userService: UserService,
-    private jwtService: JwtService
-  ) {
-  }
+    private jwtService: JwtService,
+  ) {}
 
-  @Post("/auth")
+  @Post('/auth')
   @UseFilters(new PasswordNotValidExceptionFilter())
   @UseFilters(new UserNotFoundExceptionFilter())
   async auth(@Body() user: User, @Res() resp: Response): Promise<void> {
@@ -41,18 +45,18 @@ export class UserController {
     } else {
       const isPasswordValid = await bcrypt.compare(
         user.password,
-        userByUsername.password
+        userByUsername.password,
       );
       if (isPasswordValid) {
         const token = this.jwtService.sign({
           username: userByUsername.username,
-          permissions: userByUsername.permissions
+          permissions: userByUsername.permissions,
         });
         resp.setHeader(AUTHORIZATION_HEADER, token);
         resp.send({
           username: userByUsername.username,
           permissions: userByUsername.permissions,
-          idUserInfo: userByUsername.idUserInfo
+          idUserInfo: userByUsername.idUserInfo,
         });
       } else {
         throw new PasswordNotValidException();
@@ -64,7 +68,7 @@ export class UserController {
   @UseFilters(new UserAlreadyExistsExceptionFilter())
   async registerUser(@Body() user: User, @Res() res: Response) {
     try {
-      user.password = await bcrypt.hash(user.username + "123", 10);
+      user.password = await bcrypt.hash(user.username + '123', 10);
       res.send(await this.userService.createUser(user));
     } catch (err) {
       throw new UserAlreadyExistsException();
@@ -75,10 +79,19 @@ export class UserController {
   async getUsers(
     @Req() req: Request,
     @Res() res: Response,
-    @Query() query: UserQuery
+    @Query() query: UserQuery,
   ) {
     const users: [User[], number] = await this.userService.getUsers(query);
     res.setHeader(TOTAL_RESULTS, users[1]);
     res.send(users[0]);
+  }
+
+  @Delete(':id')
+  async deleteUser(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Param('id') id: number,
+  ) {
+    res.send(await this.userService.deleteUser(id));
   }
 }
