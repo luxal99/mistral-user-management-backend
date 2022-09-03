@@ -1,9 +1,4 @@
-import {
-  Column,
-  Entity,
-  OneToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { StatusEnum } from '../enum/StatusEnum';
 import { User } from '../../user/entity/User';
 
@@ -18,18 +13,17 @@ export class UserInfo {
   @Column({ type: 'varchar', name: 'last_name' })
   lastName: string;
 
-  @Column({ type: 'varchar', name: 'email' })
+  @Column({ type: 'varchar', name: 'email', unique: true })
   email: string;
 
   @Column({
     type: 'enum',
-    default: StatusEnum,
-    enum: StatusEnum.ACTIVE,
+    default: StatusEnum.CREATED,
+    enum: StatusEnum,
     name: 'status',
   })
   status: string;
 
   @OneToOne(() => User, (user) => user.idUserInfo) // specify inverse side as a second parameter
   idUser: User;
-
 }
