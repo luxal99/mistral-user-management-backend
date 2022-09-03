@@ -8,7 +8,7 @@ export class UserNotFoundExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 
-    response.send({
+    response.status(exception.getStatus()).send({
       statusCode: exception.getStatus(),
       message: exception.message,
     });

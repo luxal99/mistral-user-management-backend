@@ -1,4 +1,4 @@
-import { ArgumentsHost, Catch, ExceptionFilter } from "@nestjs/common";
+import { ArgumentsHost, Catch, ExceptionFilter, HttpStatus } from "@nestjs/common";
 import { PasswordNotValidException } from "../exceptions/PasswordNotValidException";
 import { Response } from "express";
 
@@ -8,7 +8,7 @@ export class PasswordNotValidExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 
-    response.send({
+    response.status(exception.getStatus()).send({
       statusCode: exception.getStatus(),
       message: exception.message,
     });
