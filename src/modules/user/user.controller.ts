@@ -35,9 +35,14 @@ export class UserController {
       if (isPasswordValid) {
         const token = this.jwtService.sign({
           username: userByUsername.username,
+          permissions:userByUsername.permissions
         });
         resp.setHeader(AUTHORIZATION_HEADER, token);
-        resp.send(user);
+        resp.send({
+          username:userByUsername.username,
+          permissions:userByUsername.permissions,
+          idUserInfo:userByUsername.idUserInfo
+        });
       } else {
         throw new PasswordNotValidException();
       }
