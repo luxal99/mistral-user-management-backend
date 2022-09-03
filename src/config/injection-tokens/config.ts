@@ -1,0 +1,1 @@
+export const DATABASE_INJECTION_TOKEN = "DATA_SOURCE";
