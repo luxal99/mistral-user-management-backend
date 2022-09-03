@@ -1,21 +1,32 @@
-import { Body, Controller, Post, Res, UseFilters } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+  Req,
+  Res,
+  UseFilters
+} from "@nestjs/common";
 import { UserService } from "./providers/user.service";
 import { User } from "./entity/User";
 import * as bcrypt from "bcrypt";
-import { Response } from "express";
+import { Request, Response } from "express";
 import { UserAlreadyExistsExceptionFilter } from "../../helpers/http-filters/UserAlreadyExistsExceptionFIlter";
 import { UserAlreadyExistsException } from "../../helpers/exceptions/UserAlreadyExistsException";
 import { JwtService } from "@nestjs/jwt";
-import { AUTHORIZATION_HEADER } from "../../config/constants/constants";
+import { AUTHORIZATION_HEADER, TOTAL_RESULTS } from "../../config/constants/constants";
 import { UserNotFoundException } from "../../helpers/exceptions/UserNotFoundException";
 import { UserNotFoundExceptionFilter } from "../../helpers/http-filters/UserNotFoundExceptionFilter";
 import { PasswordNotValidExceptionFilter } from "../../helpers/http-filters/PasswordNotValidExceptionFilter";
 import { PasswordNotValidException } from "../../helpers/exceptions/PasswordNotValidException";
+import { UserQuery } from "../../helpers/models/query/UserQuery";
 
 @Controller("user")
 export class UserController {
-  constructor(private userService: UserService,
-              private jwtService: JwtService
+  constructor(
+    private userService: UserService,
+    private jwtService: JwtService
   ) {
   }
 
@@ -35,20 +46,19 @@ export class UserController {
       if (isPasswordValid) {
         const token = this.jwtService.sign({
           username: userByUsername.username,
-          permissions:userByUsername.permissions
+          permissions: userByUsername.permissions
         });
         resp.setHeader(AUTHORIZATION_HEADER, token);
         resp.send({
-          username:userByUsername.username,
-          permissions:userByUsername.permissions,
-          idUserInfo:userByUsername.idUserInfo
+          username: userByUsername.username,
+          permissions: userByUsername.permissions,
+          idUserInfo: userByUsername.idUserInfo
         });
       } else {
         throw new PasswordNotValidException();
       }
     }
   }
-
 
   @Post()
   @UseFilters(new UserAlreadyExistsExceptionFilter())
@@ -59,5 +69,16 @@ export class UserController {
     } catch (err) {
       throw new UserAlreadyExistsException();
     }
+  }
+
+  @Get()
+  async getUsers(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Query() query: UserQuery
+  ) {
+    const users: [User[], number] = await this.userService.getUsers(query);
+    res.setHeader(TOTAL_RESULTS, users[1]);
+    res.send(users[0]);
   }
 }
