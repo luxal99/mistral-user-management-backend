@@ -1,11 +1,15 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { PermissionEnum } from '../enum/PermissionEnum';
 
 @Entity()
 export class Permission {
-
   @PrimaryGeneratedColumn()
-  id:number
+  id: number;
 
-  @Column({name:"permission_name",type:"varchar"})
-  permissionName:string
+  @Column({
+    type: 'enum',
+    enum: PermissionEnum,
+    name: 'permission_name',
+  })
+  permissionName: PermissionEnum;
 }

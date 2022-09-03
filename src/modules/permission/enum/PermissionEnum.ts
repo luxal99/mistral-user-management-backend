@@ -1,0 +1,4 @@
+export enum PermissionEnum {
+  CAN_SEE_CODE = 'CAN_SEE_CODE',
+  CAN_SEE_DESCRIPTION = 'CAN_SEE_DESCRIPTION',
+}

@@ -10,7 +10,7 @@ import { CONFIG } from "./config/environment/environment.config";
 @Module({
   imports: [CONFIG, PermissionModule, UserModule, UserInfoModule],
   controllers: [AppController],
-  providers: [...databaseProviders, AppService]
+  providers: [...databaseProviders, AppService],
 })
 export class AppModule {
 }

@@ -1,14 +1,11 @@
 import {
   Column,
   Entity,
-  JoinTable,
-  ManyToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { StatusEnum } from '../enum/StatusEnum';
 import { User } from '../../user/entity/User';
-import { Permission } from '../../permission/entity/Permission';
 
 @Entity()
 export class UserInfo {
