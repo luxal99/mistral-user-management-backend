@@ -28,10 +28,12 @@ import { UserNotFoundExceptionFilter } from '../../helpers/http-filters/UserNotF
 import { PasswordNotValidExceptionFilter } from '../../helpers/http-filters/PasswordNotValidExceptionFilter';
 import { PasswordNotValidException } from '../../helpers/exceptions/PasswordNotValidException';
 import { UserQuery } from '../../helpers/models/query/UserQuery';
-import { UserInfoService } from '../user-info/providers/user-info.service';
 import { UserInfo } from '../user-info/entity/UserInfo';
 import { Permission } from '../permission/entity/Permission';
 import { JwtGuard } from '../../helpers/guard/jwt.guard';
+import { DefaultBadRequestException } from '../../helpers/exceptions/DefaultBadRequestException';
+import { QueryFailedError } from 'typeorm';
+import { DefaultBadRequestExceptionFilter } from '../../helpers/http-filters/DefaultBadRequestExceptionFilter';
 
 @Controller('user')
 export class UserController {
@@ -77,13 +79,21 @@ export class UserController {
       user.password = await bcrypt.hash(user.username + '123', 10);
       res.send(await this.userService.createUser(user));
     } catch (err) {
-      throw new UserAlreadyExistsException();
+      if (
+        err instanceof QueryFailedError &&
+        err.driverError['code'] === 'ER_DUP_ENTRY'
+      ) {
+        throw new UserAlreadyExistsException();
+      } else {
+        throw new DefaultBadRequestException();
+      }
     }
   }
 
   @Put()
   @UseGuards(JwtGuard)
   @UseFilters(new UserAlreadyExistsExceptionFilter())
+  @UseFilters(new DefaultBadRequestExceptionFilter())
   async updateUser(
     @Body() userInfo: UserInfo,
     @Res() res: Response,
@@ -92,7 +102,14 @@ export class UserController {
     try {
       res.send(await this.userService.update(username, userInfo));
     } catch (err) {
-      throw new UserAlreadyExistsException();
+      if (
+        err instanceof QueryFailedError &&
+        err.driverError['code'] === 'ER_DUP_ENTRY'
+      ) {
+        throw new UserAlreadyExistsException();
+      } else {
+        throw new DefaultBadRequestException();
+      }
     }
   }
 
@@ -130,7 +147,11 @@ export class UserController {
     @Res() res: Response,
     @Param('id') id: number,
   ) {
-    res.send(await this.userService.deleteUser(id));
+    try {
+      res.send(await this.userService.deleteUser(id));
+    } catch (err) {
+      throw new DefaultBadRequestException();
+    }
   }
 
   @Get('by-username')
@@ -139,6 +160,10 @@ export class UserController {
     @Query('username') username: string,
     @Res() res: Response,
   ) {
-    res.send(await this.userService.findByUsername(username));
+    try {
+      res.send(await this.userService.findByUsername(username));
+    } catch (err) {
+      throw new DefaultBadRequestException();
+    }
   }
 }
