@@ -10,6 +10,7 @@ import {
   Req,
   Res,
   UseFilters,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './providers/user.service';
 import { User } from './entity/User';
@@ -30,6 +31,7 @@ import { UserQuery } from '../../helpers/models/query/UserQuery';
 import { UserInfoService } from '../user-info/providers/user-info.service';
 import { UserInfo } from '../user-info/entity/UserInfo';
 import { Permission } from '../permission/entity/Permission';
+import { JwtGuard } from '../../helpers/guard/jwt.guard';
 
 @Controller('user')
 export class UserController {
@@ -80,6 +82,7 @@ export class UserController {
   }
 
   @Put()
+  @UseGuards(JwtGuard)
   @UseFilters(new UserAlreadyExistsExceptionFilter())
   async updateUser(
     @Body() userInfo: UserInfo,
@@ -93,7 +96,8 @@ export class UserController {
     }
   }
 
-  @Put("permissions")
+  @UseGuards(JwtGuard)
+  @Put('permissions')
   @UseFilters(new UserAlreadyExistsExceptionFilter())
   async updateUserPermissions(
     @Body() permissions: Permission[],
@@ -107,6 +111,7 @@ export class UserController {
     }
   }
 
+  @UseGuards(JwtGuard)
   @Get()
   async getUsers(
     @Req() req: Request,
@@ -119,6 +124,7 @@ export class UserController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtGuard)
   async deleteUser(
     @Req() req: Request,
     @Res() res: Response,
@@ -128,6 +134,7 @@ export class UserController {
   }
 
   @Get('by-username')
+  @UseGuards(JwtGuard)
   async findUserByUserName(
     @Query('username') username: string,
     @Res() res: Response,
