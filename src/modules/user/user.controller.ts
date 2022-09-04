@@ -29,6 +29,7 @@ import { PasswordNotValidException } from '../../helpers/exceptions/PasswordNotV
 import { UserQuery } from '../../helpers/models/query/UserQuery';
 import { UserInfoService } from '../user-info/providers/user-info.service';
 import { UserInfo } from '../user-info/entity/UserInfo';
+import { Permission } from '../permission/entity/Permission';
 
 @Controller('user')
 export class UserController {
@@ -88,6 +89,22 @@ export class UserController {
     try {
       res.send(await this.userService.update(username, userInfo));
     } catch (err) {
+      throw new UserAlreadyExistsException();
+    }
+  }
+
+  @Put("permissions")
+  @UseFilters(new UserAlreadyExistsExceptionFilter())
+  async updateUserPermissions(
+    @Body() permissions: Permission[],
+    @Res() res: Response,
+    @Query('username') username: string,
+  ) {
+    try {
+      res.send(await this.userService.updatePermission(username, permissions));
+    } catch (err) {
+      console.log(permissions);
+      console.log(err);
       throw new UserAlreadyExistsException();
     }
   }

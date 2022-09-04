@@ -4,6 +4,7 @@ import { Repository, UpdateResult } from 'typeorm';
 import { User } from '../entity/User';
 import { UserQuery } from '../../../helpers/models/query/UserQuery';
 import { UserInfo } from '../../user-info/entity/UserInfo';
+import { Permission } from "../../permission/entity/Permission";
 
 @Injectable()
 export class UserService {
@@ -25,7 +26,7 @@ export class UserService {
   async findByUsernameWithoutPermission(username: string): Promise<User> {
     return await this.userRepository.findOne({
       where: { username },
-      relations: ['idUserInfo'],
+      relations: ['idUserInfo','permissions'],
     });
   }
 
@@ -37,10 +38,19 @@ export class UserService {
     return await this.userRepository.save(userForUpdate);
   }
 
+  async updatePermission(username: string, permissions: Permission[]): Promise<any> {
+    const userForUpdate: User = await this.findByUsernameWithoutPermission(
+      username,
+    );
+    Object.assign(userForUpdate.permissions, permissions);
+    return await this.userRepository.save(userForUpdate);
+  }
+
   async getUsers(query: UserQuery): Promise<[User[], number]> {
     const queryBuilder = this.userRepository
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.idUserInfo', 'idUserInfo')
+      .leftJoinAndSelect('user.permissions', 'permissions')
       .take(10)
       .skip(query.page * 10);
 
