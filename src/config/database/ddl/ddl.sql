@@ -1,3 +1,5 @@
+create database if not exists user_management;
+use user_management;
 create table permission
 (
     id              int auto_increment
