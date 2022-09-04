@@ -130,14 +130,19 @@ export class UserController {
 
   @UseGuards(JwtGuard)
   @Get()
+  @UseFilters(new DefaultBadRequestExceptionFilter())
   async getUsers(
     @Req() req: Request,
     @Res() res: Response,
     @Query() query: UserQuery,
   ) {
-    const users: [User[], number] = await this.userService.getUsers(query);
-    res.setHeader(TOTAL_RESULTS, users[1]);
-    res.send(users[0]);
+    try {
+      const users: [User[], number] = await this.userService.getUsers(query);
+      res.setHeader(TOTAL_RESULTS, users[1]);
+      res.send(users[0]);
+    } catch (err) {
+      throw new DefaultBadRequestException();
+    }
   }
 
   @Delete(':id')
