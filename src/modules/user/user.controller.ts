@@ -103,8 +103,6 @@ export class UserController {
     try {
       res.send(await this.userService.updatePermission(username, permissions));
     } catch (err) {
-      console.log(permissions);
-      console.log(err);
       throw new UserAlreadyExistsException();
     }
   }
